@@ -155,6 +155,7 @@ public class ViewEstudante extends JFrame implements ActionListener {
 		if (e.getSource() == btnInserir) {
 
 			cc.adicionarEstudante(codigo, nome, endereco, anoLectivo);
+			
 
 		}
 
