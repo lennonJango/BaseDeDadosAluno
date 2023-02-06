@@ -130,6 +130,10 @@ public class ViewEstudante extends JFrame implements ActionListener {
 		table.setModel(new DefaultTableModel(
 				new Object[][] { { null, null, null, null }, { null, null, null, null }, { null, null, null, null }, },
 				new String[] { "Nivel Academico", "Codigo", "Nome", " Endere\u00E7o" }) {
+			/**
+					 * 
+					 */
+			private static final long serialVersionUID = 1L;
 			Class[] columnTypes = new Class[] { Integer.class, Object.class, Object.class, Object.class };
 
 			public Class getColumnClass(int columnIndex) {
@@ -142,6 +146,23 @@ public class ViewEstudante extends JFrame implements ActionListener {
 		table.setSelectionMode(ListSelectionModel.SINGLE_SELECTION);
 		table.setBounds(399, 37, 322, 228);
 		contentPane.add(table);
+	}
+
+	public void LimparInputs() {
+		//Metodo que limpa os inputs
+		textNome.setText("");
+		textCodigo.setText("");
+		;
+		textEndereco.setText("");
+		;
+		textNivelAcademico.setText("");
+
+	}
+	
+	public void adicionarNaTabela() {
+		
+		//Adiciona os dados na tabela
+	
 	}
 
 	@Override
@@ -157,26 +178,41 @@ public class ViewEstudante extends JFrame implements ActionListener {
 
 			try {
 				cc.adicionarEstudante(codigo, nome, endereco, anoLectivo);
+				LimparInputs();
 			} catch (SQLException e1) {
 				// TODO Auto-generated catch block
-				e1.printStackTrace();
+				System.out.println("Erro ao adicionar");
 			}
-			
 
 		}
 
 		if (e.getSource() == btnList) {
-			cc.listar();
+			try {
+				cc.listar();
+			} catch (SQLException e1) {
+				// TODO Auto-generated catch block
+				System.out.println("erro ao listar");
+			}
 
 		}
 
 		if (e.getSource() == btnUpdate) {
 
-			cc.Actualizar(codigo, nome, endereco, anoLectivo);
+			try {
+				cc.Actualizar(codigo, nome, endereco, anoLectivo);
+			} catch (SQLException e1) {
+				// TODO Auto-generated catch block
+				System.out.println("Erro ao atualizar");
+			}
 		}
-		
-		if(e.getSource()==btnRemove) {
-			cc.remover(codigo);
+
+		if (e.getSource() == btnRemove) {
+			try {
+				cc.remover(codigo);
+			} catch (SQLException e1) {
+				// TODO Auto-generated catch block
+				System.out.println("Erro ao remover");
+			}
 		}
 
 	}

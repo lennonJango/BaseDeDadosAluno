@@ -15,86 +15,79 @@ public class Controle {
 		Conne con = new Conne();
 		Connection conectar = (Connection) con.connectar();
 		PreparedStatement query = null;
-		conectar.prepareStatement("Insert into alunos (codigo,nome,endereco,nivelAcademico) values (?,?,?,?);");
-		// query.setInt(0, 12);
-		if (query == null) {
 
-			
-			query.setInt(1, codigo);
-			query.setString(2, nome);
-			query.setString(3, endereco);
-			query.setInt(4, anoLectivo);
-			query.executeUpdate();
-			conectar.close();
-		}
+		query = conectar.prepareStatement("Insert into alunos (codigo,nome,endereco,nivelAcademico) values (?,?,?,?);");
+		// query.setInt(0, 12if (query == null) {
+
+		query.setInt(1, codigo);
+		query.setString(2, nome);
+		query.setString(3, endereco);
+		query.setInt(4, anoLectivo);
+		query.executeUpdate();
+		conectar.close();
+
+		JOptionPane.showMessageDialog(null, "Estudante adicionado com sucesso");
 
 	}
 
-	public ArrayList<Estudante> listar() {
+	public ArrayList<Estudante> listar() throws SQLException {
 
 		ArrayList<Estudante> listaDeEstudante = new ArrayList<>();
 
 		Conne con = new Conne();
 		Connection conectar = (Connection) con.connectar();
 		PreparedStatement query = null;
+		query = conectar.prepareStatement("select * from alunos;");
 
-		try {
-			ResultSet result = (ResultSet) query.executeQuery();
-			conectar.prepareStatement("select * from aluno;");
-			while (result.next()) {
-				int codigo = result.getInt(1);
-				String nome = result.getString(2);
-				String endereco = result.getString(3);
-				int anoLectivo = result.getInt(4);
+		ResultSet result = (ResultSet) query.executeQuery();
 
-				Estudante aluno = new Estudante(codigo, nome, endereco, anoLectivo);
-				listaDeEstudante.add(aluno);
-			}
+		while (result.next()) {
+			int codigo = result.getInt(1);
+			String nome = result.getString(2);
+			String endereco = result.getString(3);
+			int anoLectivo = result.getInt(4);
 
+			Estudante aluno = new Estudante(codigo, nome, endereco, anoLectivo);
+			listaDeEstudante.add(aluno);
 			JOptionPane.showMessageDialog(null, "Listagem efectudada com sucesso");
-		} catch (SQLException e) {
-
-			JOptionPane.showMessageDialog(null, "Falha ao fazer a listagem");
-
 		}
 
 		return listaDeEstudante;
 
 	}
 
-	public void Actualizar(int codigo, String nome, String endereco, int anoLectivo) {
+	public void Actualizar(int codigo, String nome, String endereco, int anoLectivo) throws SQLException {
 
 		Conne connect = new Conne();
 		Connection con = (Connection) connect.connectar();
 		PreparedStatement query = null;
-		try {
-			con.prepareStatement("update table aluno set nome =? ,endereco=?, nivelAcademico=? where codigo =?;");
+
+		query = con.prepareStatement("update table alunos set nome =? ,endereco=?, nivelAcademico=? where codigo =?;");
+		if (query != null) {
 			query.setInt(1, codigo);
 			query.executeUpdate();
 
 			JOptionPane.showMessageDialog(null, "Atualizão concluida com sucesso");
-		} catch (SQLException e) {
-			// TODO Auto-generated catch block
+		} else {
+
 			JOptionPane.showMessageDialog(null, "Erro ao atualizar a tabela");
 		}
-
 	}
 
-	public void remover(int codigo) {
+	public void remover(int codigo) throws SQLException {
 
 		Conne con = new Conne();
 		Connection conectar = (Connection) con.connectar();
 		PreparedStatement query = null;
 
-		try {
-			conectar.prepareStatement("delete from aluno where codigo = ?;");
+		query = conectar.prepareStatement("delete from alunos where codigo = ?;");
+		if (query != null) {
 			query.setInt(1, codigo);
 			query.executeUpdate();
 			JOptionPane.showMessageDialog(null, "Aluno removido");
-		} catch (SQLException e) {
-			// TODO Auto-generated catch block
-			JOptionPane.showMessageDialog(null, "Erro ao remover");
+		} else {
 
+			JOptionPane.showMessageDialog(null, "Erro ao remover");
 		}
 
 	}
