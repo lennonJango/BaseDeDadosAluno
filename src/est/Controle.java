@@ -10,26 +10,22 @@ import javax.swing.JOptionPane;
 
 public class Controle {
 
-	public void adicionarEstudante(int codigo, String nome, String endereco, int anoLectivo) {
+	public void adicionarEstudante(int codigo, String nome, String endereco, int anoLectivo) throws SQLException {
 
 		Conne con = new Conne();
 		Connection conectar = (Connection) con.connectar();
 		PreparedStatement query = null;
+		conectar.prepareStatement("Insert into alunos (codigo,nome,endereco,nivelAcademico) values (?,?,?,?);");
+		// query.setInt(0, 12);
+		if (query == null) {
 
-		try {
-			conectar.prepareStatement("insert into aluno values (?,?,?);");
-
+			
 			query.setInt(1, codigo);
 			query.setString(2, nome);
 			query.setString(3, endereco);
 			query.setInt(4, anoLectivo);
 			query.executeUpdate();
-			query.close();
-			JOptionPane.showMessageDialog(null, "A introduão de dados foi concluida");
-
-		} catch (SQLException e) {
-			// TODO Auto-generated catch block
-			JOptionPane.showMessageDialog(null, "Falha ao introduzir dados");
+			conectar.close();
 		}
 
 	}
@@ -72,7 +68,7 @@ public class Controle {
 		Connection con = (Connection) connect.connectar();
 		PreparedStatement query = null;
 		try {
-			con.prepareStatement("update table aluno set nome =? ,endereco=?, anoLectivo=? where codigo =?;");
+			con.prepareStatement("update table aluno set nome =? ,endereco=?, nivelAcademico=? where codigo =?;");
 			query.setInt(1, codigo);
 			query.executeUpdate();
 

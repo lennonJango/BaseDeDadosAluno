@@ -1,38 +1,35 @@
 package est;
 
-import java.sql.Connection;
+import java.sql.*;
 import java.sql.DriverManager;
 import java.sql.SQLException;
 
 import javax.swing.JOptionPane;
 
 public class Conne {
-	
-	
+
 	Connection conectar = null;
-	String driver = "org.gjt.mm.mysql.Driver";
-	String url = "jdbc: mysql://localhost/TPW4";
+	String driver = "com.mysql.cj.jdbc.Driver";
 
-
-	
 	public Connection connectar() {
-		
 
-		if (conectar == null) {
-			try {
-				Class.forName(driver);
-			} catch (ClassNotFoundException e1) {
-				// TODO Auto-generated catch block
-				e1.printStackTrace();
+		Connection con = null;
+
+		try {
+
+			Class.forName(driver);
+			if (con == null) {
+				con = (Connection) DriverManager.getConnection("jdbc:mysql://localhost:3306/TPW4", "root",
+						"Gabilenow2111");
+
 			}
-			try {
-				conectar = (Connection) DriverManager.getConnection(url, "root", "Gabilenow2111");
-			} catch (SQLException e) {
-				// TODO Auto-generated catch block
-				JOptionPane.showMessageDialog(null, e.toString());
-			}
+
+			JOptionPane.showMessageDialog(null, "Connectado");
+
+		} catch (SQLException | ClassNotFoundException e) {
+			JOptionPane.showMessageDialog(null, e.toString());
 		}
+		return con;
 
-		return conectar;
 	}
 }
