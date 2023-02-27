@@ -49,9 +49,10 @@ public class Controle {
 
 			Estudante aluno = new Estudante(codigo, nome, endereco, anoLectivo);
 			listaDeEstudante.add(aluno);
-			JOptionPane.showMessageDialog(null, "Listagem efectudada com sucesso");
+			
 		}
 
+		JOptionPane.showMessageDialog(null, "Listagem efectudada com sucesso");
 		return listaDeEstudante;
 
 	}
@@ -62,9 +63,12 @@ public class Controle {
 		Connection con = (Connection) connect.connectar();
 		PreparedStatement query = null;
 
-		query = con.prepareStatement("update table alunos set nome =? ,endereco=?, nivelAcademico=? where codigo =?;");
+		query = con.prepareStatement("update alunos set nome =? ,endereco=?, nivelAcademico=? where codigo =?;");
 		if (query != null) {
 			query.setInt(1, codigo);
+			query.setString(2, endereco);
+			query.setString(3, endereco);
+			query.setInt(4, anoLectivo);
 			query.executeUpdate();
 
 			JOptionPane.showMessageDialog(null, "Atualizão concluida com sucesso");
@@ -83,6 +87,7 @@ public class Controle {
 		query = conectar.prepareStatement("delete from alunos where codigo = ?;");
 		if (query != null) {
 			query.setInt(1, codigo);
+
 			query.executeUpdate();
 			JOptionPane.showMessageDialog(null, "Aluno removido");
 		} else {

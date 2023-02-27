@@ -4,15 +4,16 @@ import java.awt.EventQueue;
 import java.awt.event.ActionEvent;
 import java.awt.event.ActionListener;
 import java.sql.SQLException;
+import java.util.ArrayList;
 
 import javax.swing.JButton;
 import javax.swing.JFrame;
 import javax.swing.JLabel;
+import javax.swing.JOptionPane;
 import javax.swing.JPanel;
 import javax.swing.JScrollPane;
 import javax.swing.JTable;
 import javax.swing.JTextField;
-import javax.swing.ListSelectionModel;
 import javax.swing.SwingConstants;
 import javax.swing.border.EmptyBorder;
 import javax.swing.table.DefaultTableModel;
@@ -27,10 +28,10 @@ public class ViewEstudante extends JFrame implements ActionListener {
 	private JTextField textCodigo;
 	private JTextField textNome;
 	private JTextField textEndereco;
-	private JTable table;
 	JButton btnInserir, btnList, btnUpdate, btnRemove;
 	private JTextField textNivelAcademico;
 	private JLabel lblNewLabel_3;
+	private JTable tableRegistos;
 
 	/**
 	 * Launch the application.
@@ -61,7 +62,7 @@ public class ViewEstudante extends JFrame implements ActionListener {
 		contentPane.setLayout(null);
 
 		JPanel panel = new JPanel();
-		panel.setBounds(36, 23, 322, 320);
+		panel.setBounds(10, 23, 322, 320);
 		contentPane.add(panel);
 		panel.setLayout(null);
 
@@ -120,36 +121,31 @@ public class ViewEstudante extends JFrame implements ActionListener {
 		btnRemove = new JButton("Remove");
 		btnRemove.setBounds(197, 481, 89, 23);
 		contentPane.add(btnRemove);
-		btnRemove.addActionListener(this);
 
 		JScrollPane scrollPane = new JScrollPane();
-		scrollPane.setBounds(721, 530, -328, -498);
+		scrollPane.setBounds(342, 23, 379, 492);
 		contentPane.add(scrollPane);
 
-		table = new JTable();
-		table.setModel(new DefaultTableModel(
-				new Object[][] { { null, null, null, null }, { null, null, null, null }, { null, null, null, null }, },
-				new String[] { "Nivel Academico", "Codigo", "Nome", " Endere\u00E7o" }) {
+		tableRegistos = new JTable();
+		tableRegistos.setModel(new DefaultTableModel(new Object[][] {
+
+		}, new String[] { "Nome ", "Nivel Academico", "Codigo", "Endere\u00E7o  " }) {
 			/**
-					 * 
-					 */
+			 * 
+			 */
 			private static final long serialVersionUID = 1L;
-			Class[] columnTypes = new Class[] { Integer.class, Object.class, Object.class, Object.class };
+			Class[] columnTypes = new Class[] { String.class, Integer.class, Integer.class, String.class };
 
 			public Class getColumnClass(int columnIndex) {
 				return columnTypes[columnIndex];
 			}
 		});
-		table.getColumnModel().getColumn(1).setPreferredWidth(90);
-		table.setColumnSelectionAllowed(true);
-		table.setCellSelectionEnabled(true);
-		table.setSelectionMode(ListSelectionModel.SINGLE_SELECTION);
-		table.setBounds(399, 37, 322, 228);
-		contentPane.add(table);
+		scrollPane.setViewportView(tableRegistos);
+		btnRemove.addActionListener(this);
 	}
 
 	public void LimparInputs() {
-		//Metodo que limpa os inputs
+		// Metodo que limpa os inputs
 		textNome.setText("");
 		textCodigo.setText("");
 		;
@@ -158,23 +154,37 @@ public class ViewEstudante extends JFrame implements ActionListener {
 		textNivelAcademico.setText("");
 
 	}
-	
-	public void adicionarNaTabela() {
-		
-		//Adiciona os dados na tabela
-	
+
+	public void limparTabela() {
+		while (tableRegistos.getRowCount() > 0) {
+			((DefaultTableModel) tableRegistos.getModel()).removeRow(0);
+		}
+	}
+
+	public void adicionarNaTabela() throws SQLException {
+		LimparInputs();
+		Controle cc = new Controle();
+
+		DefaultTableModel adicionar = (DefaultTableModel) tableRegistos.getModel();
+		ArrayList<Estudante> estudantes = cc.listar();
+
+		for (Estudante estudante : estudantes) {
+			adicionar.addRow(new Object[] { estudante.getCodigo(), estudante.getNome(), estudante.getEndereco(),
+					estudante.getAnoLectivo() });
+
+		}
+
 	}
 
 	@Override
 	public void actionPerformed(ActionEvent e) {
-		String nome = textNome.getText();
-		int codigo = Integer.parseInt(textCodigo.getText());
-		String endereco = textEndereco.getText();
-		int anoLectivo = Integer.parseInt(textNivelAcademico.getText());
-
-		Controle cc = new Controle();
 
 		if (e.getSource() == btnInserir) {
+			Controle cc = new Controle();
+			String nome = textNome.getText();
+			int codigo = Integer.parseInt(textCodigo.getText());
+			String endereco = textEndereco.getText();
+			int anoLectivo = Integer.parseInt(textNivelAcademico.getText());
 
 			try {
 				cc.adicionarEstudante(codigo, nome, endereco, anoLectivo);
@@ -188,7 +198,8 @@ public class ViewEstudante extends JFrame implements ActionListener {
 
 		if (e.getSource() == btnList) {
 			try {
-				cc.listar();
+				LimparInputs();
+				adicionarNaTabela();
 			} catch (SQLException e1) {
 				// TODO Auto-generated catch block
 				System.out.println("erro ao listar");
@@ -197,9 +208,17 @@ public class ViewEstudante extends JFrame implements ActionListener {
 		}
 
 		if (e.getSource() == btnUpdate) {
+			String nome = textNome.getText();
+			int codigo = Integer.parseInt(textCodigo.getText());
+			String endereco = textEndereco.getText();
+			int anoLectivo = Integer.parseInt(textNivelAcademico.getText());
+			Controle cc = new Controle();
 
 			try {
 				cc.Actualizar(codigo, nome, endereco, anoLectivo);
+				JOptionPane.showMessageDialog(null, "Dados Atualizados com sucesso");
+				LimparInputs();
+
 			} catch (SQLException e1) {
 				// TODO Auto-generated catch block
 				System.out.println("Erro ao atualizar");
@@ -207,8 +226,16 @@ public class ViewEstudante extends JFrame implements ActionListener {
 		}
 
 		if (e.getSource() == btnRemove) {
+
+			int codigo = Integer.parseInt(textCodigo.getText());
+			Controle cc = new Controle();
 			try {
+ 
 				cc.remover(codigo);
+				JOptionPane.showMessageDialog(null, "Removido com sucesso");
+				limparTabela();
+				LimparInputs();
+
 			} catch (SQLException e1) {
 				// TODO Auto-generated catch block
 				System.out.println("Erro ao remover");
